@@ -184,6 +184,17 @@ python examples/track.py --source 0 --yolo-model yolov8s.pt --classes 16 17  # C
 </details>
 
 <details>
+<summary>Tracker results</summary>
+
+Tracker results (with an id for each tracked object) in the format `frame, x, y, x, y, id, conf (%), cls format` can be saved to your experiment folder `runs/track/<yolo_model>_<deep_sort_model>/` by 
+
+```bash
+python examples/track.py --source ... --save-track
+```
+
+</details>
+
+<details>
 <summary>MOT compliant results</summary>
   
 Can be saved to your experiment folder `runs/track/<yolo_model>_<deep_sort_model>/` by 

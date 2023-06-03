@@ -150,6 +150,13 @@ def run(args):
                         frame_idx,
                         i,
                     )
+                    if predictor.args.save_track:
+                        tracks = np.copy(predictor.tracker_outputs[i]) # --> (x, y, x, y, id, conf, cls)
+                        tracks[:,5] = tracks[:,5] * 100 # convert conf to percentage (so can store as int)
+                        frame_col = np.full((tracks.shape[0], 1), frame_idx)
+                        tracks = np.hstack((frame_col, tracks)) # add frame number as first element
+                        with open(str(predictor.MOT_txt_path) + '.track.txt', 'ab') as f:  # append binary mode
+                            np.savetxt(f, tracks, fmt='%d')
 
             # display an image in a window using OpenCV imshow()
             if predictor.args.show and predictor.plotted_img is not None:
@@ -204,7 +211,13 @@ def parse_opt():
     parser.add_argument('--hide-label', action='store_true', help='hide labels when show')
     parser.add_argument('--hide-conf', action='store_true', help='hide confidences when show')
     parser.add_argument('--save-txt', action='store_true', help='save tracking results in a txt file')
+    parser.add_argument('--save-track', action='store_true', help='save tracking results in frame, x, y, x, y, id, conf (%), cls format')
     opt = parser.parse_args()
+
+    if opt.save_track:
+        # --save-track implies --save-txt
+        opt.save_txt = True
+
     print_args(vars(opt))
     return opt
 
